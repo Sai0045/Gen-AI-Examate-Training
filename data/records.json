@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "vaccine": "TT-1",
+    "due_age": "Early in pregnancy",
+    "latest_age": "As early as possible in pregnancy",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Upper Arm",
+    "protects_against": "Tetanus"
+  },
+  {
+    "id": 2,
+    "vaccine": "TT-2",
+    "due_age": "4 weeks after TT-1",
+    "latest_age": "Before 36 weeks of pregnancy, but give even if later",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Upper Arm",
+    "protects_against": "Tetanus"
+  },
+  {
+    "id": 3,
+    "vaccine": "TT-Booster",
+    "due_age": "If 2 TT doses were received in a pregnancy within the last 3 years",
+    "latest_age": "Before 36 weeks of pregnancy, but give even if later",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Upper Arm",
+    "protects_against": "Tetanus"
+  },
+  {
+    "id": 4,
+    "vaccine": "BCG",
+    "due_age": "At birth",
+    "latest_age": "Till one year of age",
+    "dose": "0.05 ml until 1 month of age, 0.1 ml beyond 1 month",
+    "route_site": "Intradermal, Upper Arm - LEFT",
+    "protects_against": "Tuberculosis"
+  },
+  {
+    "id": 5,
+    "vaccine": "Hepatitis B - Birth dose",
+    "due_age": "At birth",
+    "latest_age": "Within 24 hours",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Antero-lateral side of mid-thigh - LEFT",
+    "protects_against": "Hepatitis B"
+  },
+  {
+    "id": 6,
+    "vaccine": "OPV-0",
+    "due_age": "At birth",
+    "latest_age": "Within the first 15 days",
+    "dose": "2 drops",
+    "route_site": "Oral",
+    "protects_against": "Polio"
+  },
+  {
+    "id": 7,
+    "vaccine": "OPV 1, 2 & 3",
+    "due_age": "At 6 weeks, 10 weeks & 14 weeks",
+    "latest_age": "Till 5 years of age",
+    "dose": "2 drops",
+    "route_site": "Oral",
+    "protects_against": "Polio"
+  },
+  {
+    "id": 8,
+    "vaccine": "Pentavalent 1, 2 & 3",
+    "due_age": "At 6 weeks, 10 weeks & 14 weeks",
+    "latest_age": "1 year of age",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Antero-lateral side of mid-thigh - LEFT",
+    "protects_against": "Diphtheria, Pertussis, Tetanus, Hepatitis B, Hib"
+  },
+  {
+    "id": 9,
+    "vaccine": "Fractional IPV",
+    "due_age": "At 6 & 14 weeks",
+    "latest_age": "1 year of age",
+    "dose": "0.1 ml",
+    "route_site": "Intradermal, Upper Arm - RIGHT",
+    "protects_against": "Polio"
+  },
+  {
+    "id": 10,
+    "vaccine": "Rotavirus (where applicable)",
+    "due_age": "At 6 weeks, 10 weeks & 14 weeks",
+    "latest_age": "1 year of age",
+    "dose": "5 drops",
+    "route_site": "Oral",
+    "protects_against": "Diarrhoeas due to rotavirus"
+  },
+  {
+    "id": 11,
+    "vaccine": "PCV (where applicable)",
+    "due_age": "At 6 weeks & 14 weeks, booster at 9 completed months",
+    "latest_age": "1 year of age",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Antero-lateral side of mid-thigh - RIGHT",
+    "protects_against": "Pneumococcal disease"
+  },
+  {
+    "id": 12,
+    "vaccine": "Measles / Rubella 1st dose",
+    "due_age": "At 9 completed months - 12 months",
+    "latest_age": "5 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Subcutaneous, Upper Arm - RIGHT",
+    "protects_against": "Measles, Rubella"
+  },
+  {
+    "id": 13,
+    "vaccine": "Japanese Encephalitis 1 (where applicable)",
+    "due_age": "At 9 months - 12 months",
+    "latest_age": "15 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Subcutaneous, Upper Arm - LEFT",
+    "protects_against": "Japanese Encephalitis"
+  },
+  {
+    "id": 14,
+    "vaccine": "Vitamin A (1st dose)",
+    "due_age": "At 9 months",
+    "latest_age": "5 years of age",
+    "dose": "1 ml (1 lakh IU)",
+    "route_site": "Oral",
+    "protects_against": "Not stated in Unit 2 PDF"
+  },
+  {
+    "id": 15,
+    "vaccine": "DPT Booster-1",
+    "due_age": "16-24 months",
+    "latest_age": "7 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Antero-lateral side of mid-thigh - LEFT",
+    "protects_against": "Diphtheria, Pertussis, Tetanus"
+  },
+  {
+    "id": 16,
+    "vaccine": "Measles / Rubella 2nd dose",
+    "due_age": "16-24 months",
+    "latest_age": "5 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Subcutaneous, Upper Arm - RIGHT",
+    "protects_against": "Measles, Rubella"
+  },
+  {
+    "id": 17,
+    "vaccine": "OPV Booster",
+    "due_age": "16-24 months",
+    "latest_age": "5 years",
+    "dose": "2 drops",
+    "route_site": "Oral",
+    "protects_against": "Polio"
+  },
+  {
+    "id": 18,
+    "vaccine": "Japanese Encephalitis 2 (where applicable)",
+    "due_age": "16-24 months",
+    "latest_age": "Till 15 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Subcutaneous, Upper Arm - LEFT",
+    "protects_against": "Japanese Encephalitis"
+  },
+  {
+    "id": 19,
+    "vaccine": "Vitamin A (2nd to 9th dose)",
+    "due_age": "At 16 months, then one dose every 6 months",
+    "latest_age": "Up to the age of 5 years",
+    "dose": "2 ml (2 lakh IU)",
+    "route_site": "Oral",
+    "protects_against": "Not stated in Unit 2 PDF"
+  },
+  {
+    "id": 20,
+    "vaccine": "DPT Booster-2",
+    "due_age": "5-6 years",
+    "latest_age": "7 years of age",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Upper Arm",
+    "protects_against": "Diphtheria, Pertussis, Tetanus"
+  },
+  {
+    "id": 21,
+    "vaccine": "TT (10 years & 16 years)",
+    "due_age": "10 years & 16 years",
+    "latest_age": "16 years",
+    "dose": "0.5 ml",
+    "route_site": "Intramuscular, Upper Arm",
+    "protects_against": "Tetanus"
+  }
+]
