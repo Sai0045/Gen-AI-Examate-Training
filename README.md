@@ -29,3 +29,9 @@ Then open http://127.0.0.1:8000/docs
 - GET /records/{id}
 - GET /search?q=
 - POST /questions
+
+## Docs and evaluation
+- docs/how_llms_work.md explains how LLMs work in my own words
+- eval/questions.md has 10 test questions, and Q6 cannot be answered from the data
+- python -m eval.check_questions checks them against the search
+- Known issues: Q8, Q9 and Q10 fail with TF-IDF word matching, and semantic search should improve them

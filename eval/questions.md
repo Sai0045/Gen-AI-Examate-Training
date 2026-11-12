@@ -12,3 +12,10 @@
 | 8 | When is the first Measles/Rubella dose given? | At 9 completed months to 12 months |
 | 9 | When is the first Vitamin A dose and how much is given? | At 9 months, 1 ml (1 lakh IU), oral |
 | 10 | Which vaccine do pregnant women get and when? | TT-1 early in pregnancy, TT-2 4 weeks after TT-1 |
+
+## Results of the first TF-IDF run
+- Q1 to Q5 and Q7: the top result was relevant and correct
+- Q6: "I don't know" (correct, the data cannot answer it)
+- Q8: returned the 2nd Measles/Rubella dose instead of the 1st
+- Q9: returned the 2nd to 9th Vitamin A dose instead of the 1st
+- Q10: "I don't know" (wrong), probably because the records say "pregnancy" and the question says "pregnant women"
