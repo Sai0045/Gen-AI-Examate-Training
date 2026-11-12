@@ -1,5 +1,4 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 class SmartSearch:
@@ -18,7 +17,10 @@ class SmartSearch:
 
     def search(self, query, top_k=5):
         query_vector = self.vectorizer.transform([query])
-        scores = cosine_similarity(query_vector, self.matrix)[0]
+
+        # TF-IDF vectors are already normalised to length 1,
+        # so the dot product of two vectors is their cosine similarity
+        scores = (self.matrix @ query_vector.T).toarray().ravel()
 
         # best scores first
         order = scores.argsort()[::-1]
