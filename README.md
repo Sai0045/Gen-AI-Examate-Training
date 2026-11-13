@@ -35,3 +35,9 @@ Then open http://127.0.0.1:8000/docs
 - eval/questions.md has 10 test questions, and Q6 cannot be answered from the data
 - python -m eval.check_questions checks them against the search
 - Known issues: with /chat, Q10 still gets an unknown answer because the records say pregnancy and the question says pregnant women, and Fractional IPV is missing from the 6-week answers. Semantic search (Day 7) should help with both.
+
+## LLM chat (Day 6)
+- app/llm.py calls Groq. The API key is read from .env, which is not committed. Copy .env.example to .env and add your key.
+- POST /chat returns answer, confidence, follow_up and sources, using the top records from the TF-IDF search.
+- prompts/ has the system prompt and two task prompts (v1 and v2).
+- python -m eval.prompt_compare runs both prompt versions on the test questions and writes eval/prompt_compare.md.
