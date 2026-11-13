@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from app.chat import chat_answer
 from app.records import load_records
 from app.smart_search import SmartSearch
 
@@ -15,6 +16,11 @@ SAFETY_NOTE = ("This is information from official MoHFW documents, not medical a
 
 class Question(BaseModel):
     question: str
+
+
+class ChatRequest(BaseModel):
+    question: str
+    version: str = "v2"
 
 
 @app.get("/health")
@@ -57,3 +63,15 @@ def ask(body: Question):
               + "Dose " + top["dose"] + ", " + top["route_site"] + ". "
               + "Protects against: " + top["protects_against"] + ".")
     return {"answer": answer, "matches": hits, "note": SAFETY_NOTE}
+
+
+@app.post("/chat")
+def chat(body: ChatRequest):
+    if body.version not in ("v1", "v2"):
+        raise HTTPException(status_code=400, detail="version must be v1 or v2")
+    try:
+        result = chat_answer(engine, body.question, body.version)
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    result["note"] = SAFETY_NOTE
+    return result
