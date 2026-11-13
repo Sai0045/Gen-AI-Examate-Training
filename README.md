@@ -34,4 +34,4 @@ Then open http://127.0.0.1:8000/docs
 - docs/how_llms_work.md explains how LLMs work in my own words
 - eval/questions.md has 10 test questions, and Q6 cannot be answered from the data
 - python -m eval.check_questions checks them against the search
-- Known issues: Q8, Q9 and Q10 fail with TF-IDF word matching, and semantic search should improve them
+- Known issues: with /chat, Q10 still gets an unknown answer because the records say pregnancy and the question says pregnant women, and Fractional IPV is missing from the 6-week answers. Semantic search (Day 7) should help with both.
