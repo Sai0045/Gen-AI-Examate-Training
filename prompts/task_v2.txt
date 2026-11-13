@@ -1,0 +1,14 @@
+Records from the official MoHFW schedule:
+<<RECORDS>>
+
+Parent's question: <<QUESTION>>
+
+Follow these steps:
+1. Check each record. Does it directly answer the question?
+2. If yes, answer in 2 to 3 short sentences. Give the exact age, dose, route and site from the record, and mention the latest age when the parent asks about a missed dose.
+3. If no record answers the question, the answer must be exactly: I don't know. This is not in the MoHFW immunization schedule I have. In that case the confidence must be "low".
+4. confidence is "high" only when one record clearly answers the whole question, "medium" when the answer needs more than one record, and "low" otherwise.
+5. follow_up is one short next step, for example asking the ANM or anganwadi worker to confirm.
+
+Reply with JSON only:
+{"answer": "...", "confidence": "high or medium or low", "follow_up": "..."}

@@ -1,0 +1,7 @@
+Records:
+<<RECORDS>>
+
+Question: <<QUESTION>>
+
+Answer the question using the records. Reply with JSON like this:
+{"answer": "...", "confidence": "high or medium or low", "follow_up": "one short advice for the parent"}
