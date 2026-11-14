@@ -7,7 +7,7 @@ questions = [
     "Which vaccines are given at birth?",
     "Where is the Hepatitis B birth dose given?",
     "What is the BCG dose after the baby is one month old?",
-    "Is paracetamol safe for my baby after the vaccine?",
+    "Which hospital in Kopargaon gives free vaccines on Sunday?",
     "Until what age can Pentavalent be given?",
     "When is the first Measles Rubella dose given?",
     "When is the first Vitamin A dose and how much is given?",
