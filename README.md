@@ -41,3 +41,11 @@ Then open http://127.0.0.1:8000/docs
 - POST /chat returns answer, confidence, follow_up and sources, using the top records from the TF-IDF search.
 - prompts/ has the system prompt and two task prompts (v1 and v2).
 - python -m eval.prompt_compare runs both prompt versions on the test questions and writes eval/prompt_compare.md.
+
+## Semantic search (Day 7)
+- app/chunking.py splits the PDFs and HTML in data/raw into overlapping chunks, keeping source, page and title.
+- app/embed.py makes embeddings and app/vectorstore.py stores them in a persistent Chroma collection (data/chroma, not committed).
+- Build the index with: python -m app.vectorstore
+- GET /search/semantic?q= returns the closest chunks.
+- eval/search_results.md has the top hits for the 10 test questions.
+- Chroma runs in GitHub Codespaces, because it is blocked by Application Control on my laptop.
