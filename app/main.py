@@ -75,3 +75,14 @@ def chat(body: ChatRequest):
         raise HTTPException(status_code=503, detail=str(e))
     result["note"] = SAFETY_NOTE
     return result
+
+
+
+@app.get("/search/semantic")
+def semantic(q: str, k: int = 3):
+    try:
+        from app.vectorstore import semantic_search
+        results = semantic_search(q, k)
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="Semantic search is not ready: " + str(e)[:150])
+    return {"query": q, "results": results}
