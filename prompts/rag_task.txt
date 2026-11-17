@@ -1,0 +1,9 @@
+Passages from official MoHFW documents:
+<<PASSAGES>>
+
+Question: <<QUESTION>>
+
+Reply with JSON only, like this:
+{"answer": "...", "citations": [1, 2], "answerable": true}
+
+Use "answerable": false and "citations": [] when the passages do not answer the question.
