@@ -1,0 +1,17 @@
+[
+  {"id": 1, "question": "My baby is 7 weeks old and missed the 6-week session. Is it too late for the 6-week vaccines?", "answerable": true, "keywords": ["not too late|can still|can be given|still be given|should be given"]},
+  {"id": 2, "question": "Which vaccines are due at 6 weeks?", "answerable": true, "keywords": ["OPV", "Pentavalent"]},
+  {"id": 3, "question": "Which vaccines are given at birth?", "answerable": true, "keywords": ["BCG", "Hepatitis B", "OPV"]},
+  {"id": 4, "question": "Where is the Hepatitis B birth dose given?", "answerable": true, "keywords": ["thigh"]},
+  {"id": 5, "question": "What is the BCG dose after the baby is one month old?", "answerable": true, "keywords": ["0.1"]},
+  {"id": 6, "question": "Which hospital in Kopargaon gives free vaccines on Sunday?", "answerable": false, "keywords": []},
+  {"id": 7, "question": "Until what age can Pentavalent be given?", "answerable": true, "keywords": ["1 year|one year"]},
+  {"id": 8, "question": "When is the first Measles/Rubella dose given?", "answerable": true, "keywords": ["9 completed months|9 months", "12 months"]},
+  {"id": 9, "question": "When is the first Vitamin A dose and how much is given?", "answerable": true, "keywords": ["9 months", "1 ml|1 lakh"]},
+  {"id": 10, "question": "Which vaccine do pregnant women get and when?", "answerable": true, "keywords": ["TT|tetanus"]},
+  {"id": 11, "question": "How much Hepatitis B vaccine is given at birth, and within how many hours?", "answerable": true, "keywords": ["0.5", "24 hours|24 hour"]},
+  {"id": 12, "question": "When is the OPV booster given?", "answerable": true, "keywords": ["16-24 months|16 to 24 months|16 and 24 months"]},
+  {"id": 13, "question": "At what age is the second DPT booster given?", "answerable": true, "keywords": ["5-6 years|5 to 6 years|5 and 6 years"]},
+  {"id": 14, "question": "Can my 6-month-old baby get the COVID-19 vaccine?", "answerable": false, "keywords": []},
+  {"id": 15, "question": "Which private hospital in Pune is the best for baby vaccines?", "answerable": false, "keywords": []}
+]
