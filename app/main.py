@@ -86,3 +86,20 @@ def semantic(q: str, k: int = 3):
     except Exception as e:
         raise HTTPException(status_code=503, detail="Semantic search is not ready: " + str(e)[:150])
     return {"query": q, "results": results}
+
+class AskRequest(BaseModel):
+    question: str
+    k: int = 3
+
+
+@app.post("/ask")
+def ask_rag(body: AskRequest):
+    try:
+        from app.rag import answer_question
+        result = answer_question(body.question, body.k)
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e)[:200])
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="RAG is not ready: " + str(e)[:150])
+    result["note"] = SAFETY_NOTE
+    return result
