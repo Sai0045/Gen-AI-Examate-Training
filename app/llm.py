@@ -1,4 +1,6 @@
 import os
+import time
+
 import requests
 
 BASE_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +29,7 @@ def ask_llm(system_prompt, user_message, temperature=0.2):
     if key == "" or key == "your_key_here":
         raise RuntimeError("GROQ_API_KEY is missing. Add it to the .env file.")
 
-    model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+    model = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
     body = {
         "model": model,
         "temperature": temperature,
@@ -39,11 +41,21 @@ def ask_llm(system_prompt, user_message, temperature=0.2):
     headers = {"Authorization": "Bearer " + key, "Content-Type": "application/json"}
 
     try:
-        response = requests.post(GROQ_URL, json=body, headers=headers, timeout=60)
+        response = None
+        for attempt in range(4):
+            response = requests.post(GROQ_URL, json=body, headers=headers, timeout=60)
+            # 429 means too many requests, so wait and try again
+            if response.status_code == 429 and attempt < 3:
+                time.sleep(15 * (attempt + 1))
+                continue
+            break
         response.raise_for_status()
     except requests.exceptions.Timeout:
         raise RuntimeError("The LLM took too long to answer")
     except requests.exceptions.RequestException as e:
-        raise RuntimeError("Could not get an answer from the LLM: " + str(e)[:120])
+        detail = ""
+        if e.response is not None:
+            detail = e.response.text[:150]
+        raise RuntimeError("Could not get an answer from the LLM: " + str(e)[:80] + " " + detail)
 
     return response.json()["choices"][0]["message"]["content"]
