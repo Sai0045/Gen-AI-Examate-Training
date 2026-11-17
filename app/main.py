@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.chat import chat_answer
 from app.records import load_records
 from app.smart_search import SmartSearch
+from app.agent_loop import run_agent
 
 app = FastAPI(title="TeekaTimer")
 
@@ -101,5 +102,30 @@ def ask_rag(body: AskRequest):
         raise HTTPException(status_code=503, detail=str(e)[:200])
     except Exception as e:
         raise HTTPException(status_code=503, detail="RAG is not ready: " + str(e)[:150])
+    result["note"] = SAFETY_NOTE
+    return result
+
+
+class AgentRequest(BaseModel):
+    question: str
+
+
+@app.post("/agent")
+def ask_agent(body: AgentRequest):
+    try:
+        result = run_agent(body.question)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except RuntimeError:
+        raise HTTPException(
+            status_code=503,
+            detail="The agent service is temporarily unavailable."
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=503,
+            detail="An unexpected agent error occurred."
+        )
+
     result["note"] = SAFETY_NOTE
     return result
