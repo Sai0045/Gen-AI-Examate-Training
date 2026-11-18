@@ -1,18 +1,25 @@
+
+from uuid import uuid4
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from langgraph.types import Command
 
 from app.chat import chat_answer
 from app.records import load_records
 from app.smart_search import SmartSearch
-from app.agent_loop import run_agent
+from app.graph import agent_graph
+
 
 app = FastAPI(title="TeekaTimer")
 
 records = load_records()
 engine = SmartSearch(records)
 
-SAFETY_NOTE = ("This is information from official MoHFW documents, not medical advice. "
-               "Please confirm with your ANM, anganwadi worker or doctor.")
+SAFETY_NOTE = (
+    "This is information from official MoHFW documents, not medical advice. "
+    "Please confirm with your ANM, anganwadi worker or doctor."
+)
 
 
 class Question(BaseModel):
@@ -22,6 +29,17 @@ class Question(BaseModel):
 class ChatRequest(BaseModel):
     question: str
     version: str = "v2"
+
+
+class AskRequest(BaseModel):
+    question: str
+    k: int = 3
+
+
+class AgentRequest(BaseModel):
+    question: str
+    thread_id: str | None = None
+    approved: bool | None = None
 
 
 @app.get("/health")
@@ -39,6 +57,7 @@ def get_record(record_id: int):
     for r in records:
         if r["id"] == record_id:
             return r
+
     raise HTTPException(status_code=404, detail="Record not found")
 
 
@@ -51,7 +70,6 @@ def search(q: str):
 def ask(body: Question):
     hits = engine.search(body.question, top_k=3)
 
-    # no match, or only a very weak match: do not guess about a baby's health
     if len(hits) == 0 or hits[0]["score"] < 0.1:
         return {
             "answer": "I don't know. This is not in the MoHFW immunization schedule I have.",
@@ -60,23 +78,38 @@ def ask(body: Question):
         }
 
     top = hits[0]
-    answer = (top["vaccine"] + ": due " + top["due_age"] + " (latest: " + top["latest_age"] + "). "
-              + "Dose " + top["dose"] + ", " + top["route_site"] + ". "
-              + "Protects against: " + top["protects_against"] + ".")
-    return {"answer": answer, "matches": hits, "note": SAFETY_NOTE}
+
+    answer = (
+        top["vaccine"]
+        + ": due " + top["due_age"]
+        + " (latest: " + top["latest_age"] + "). "
+        + "Dose " + top["dose"]
+        + ", " + top["route_site"] + ". "
+        + "Protects against: " + top["protects_against"] + "."
+    )
+
+    return {
+        "answer": answer,
+        "matches": hits,
+        "note": SAFETY_NOTE,
+    }
 
 
 @app.post("/chat")
 def chat(body: ChatRequest):
     if body.version not in ("v1", "v2"):
-        raise HTTPException(status_code=400, detail="version must be v1 or v2")
+        raise HTTPException(
+            status_code=400,
+            detail="version must be v1 or v2"
+        )
+
     try:
         result = chat_answer(engine, body.question, body.version)
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=str(e))
+
     result["note"] = SAFETY_NOTE
     return result
-
 
 
 @app.get("/search/semantic")
@@ -85,12 +118,12 @@ def semantic(q: str, k: int = 3):
         from app.vectorstore import semantic_search
         results = semantic_search(q, k)
     except Exception as e:
-        raise HTTPException(status_code=503, detail="Semantic search is not ready: " + str(e)[:150])
-    return {"query": q, "results": results}
+        raise HTTPException(
+            status_code=503,
+            detail="Semantic search is not ready: " + str(e)[:150]
+        )
 
-class AskRequest(BaseModel):
-    question: str
-    k: int = 3
+    return {"query": q, "results": results}
 
 
 @app.post("/ask")
@@ -101,31 +134,77 @@ def ask_rag(body: AskRequest):
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=str(e)[:200])
     except Exception as e:
-        raise HTTPException(status_code=503, detail="RAG is not ready: " + str(e)[:150])
+        raise HTTPException(
+            status_code=503,
+            detail="RAG is not ready: " + str(e)[:150]
+        )
+
     result["note"] = SAFETY_NOTE
     return result
-
-
-class AgentRequest(BaseModel):
-    question: str
 
 
 @app.post("/agent")
 def ask_agent(body: AgentRequest):
+    thread_id = body.thread_id or str(uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+
     try:
-        result = run_agent(body.question)
+        if body.thread_id is None:
+            # First request: select a tool and pause for approval.
+            result = agent_graph.invoke(
+                {
+                    "question": body.question,
+                    "decision": None,
+                    "result": None,
+                    "approved": False,
+                },
+                config=config,
+            )
+        else:
+            # Second request: resume after the approval decision.
+            if body.approved is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Please provide approved as true or false."
+                )
+
+            result = agent_graph.invoke(
+                Command(resume=body.approved),
+                config=config,
+            )
+
+        # The graph is waiting for user approval.
+        if "__interrupt__" in result:
+            return {
+                "thread_id": thread_id,
+                "status": "approval_required",
+                "approval": result["__interrupt__"][0].value,
+                "note": SAFETY_NOTE,
+            }
+
+        # The user rejected tool execution.
+        if not result.get("approved"):
+            return {
+                "thread_id": thread_id,
+                "status": "rejected",
+                "result": None,
+                "note": SAFETY_NOTE,
+            }
+
+        # The approved tool has executed.
+        return {
+            "thread_id": thread_id,
+            "status": "completed",
+            "result": result.get("result"),
+            "note": SAFETY_NOTE,
+        }
+
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    except RuntimeError:
+    except Exception:
         raise HTTPException(
             status_code=503,
             detail="The agent service is temporarily unavailable."
         )
-    except Exception:
-        raise HTTPException(
-            status_code=503,
-            detail="An unexpected agent error occurred."
-        )
-
-    result["note"] = SAFETY_NOTE
-    return result
