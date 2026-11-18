@@ -3,3 +3,8 @@
 __pycache__/
 data/raw/
 data/chroma/
+
+# TeekaTimer local user data
+data/teekatimer_ui.db
+data/teekatimer_ui.db-shm
+data/teekatimer_ui.db-wal
