@@ -1,7 +1,6 @@
 import sqlite3
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, timezone
-
 
 # Project and database paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +54,7 @@ def save_feedback(question, answer, rating, mode):
     if rating not in (-1, 1):
         raise ValueError("Rating must be 1 or -1.")
 
-    created_at = datetime.now(timezone.utc).isoformat()
+    created_at = datetime.now(UTC).isoformat()
 
     with get_connection() as connection:
         cursor = connection.execute(
@@ -76,7 +75,7 @@ def save_dose_status(date_of_birth, record_id, dose_number, is_done):
     with get_connection() as connection:
 
         if is_done:
-            completed_at = datetime.now(timezone.utc).isoformat()
+            completed_at = datetime.now(UTC).isoformat()
 
             connection.execute(
                 """

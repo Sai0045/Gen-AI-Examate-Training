@@ -1,6 +1,7 @@
 import os
 
 import chromadb
+from chromadb.errors import NotFoundError
 
 from app.chunking import make_chunks
 from app.embed import embed_texts
@@ -23,7 +24,7 @@ def reset_collection():
     client = get_client()
     try:
         client.delete_collection(COLLECTION_NAME)
-    except Exception:
+    except NotFoundError:
         pass
     return client.get_or_create_collection(name=COLLECTION_NAME)
 

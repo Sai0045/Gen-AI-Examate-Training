@@ -2,6 +2,7 @@ import json
 import os
 
 import pdfplumber
+from pdfminer.pdfparser import PDFSyntaxError
 
 from app.models import Record
 
@@ -48,8 +49,7 @@ def read_pdf_rows():
     with pdfplumber.open(PDF_PATH) as pdf:
         for page in pdf.pages:
             for table in page.extract_tables():
-                for row in table:
-                    rows.append(row)
+                rows.extend(table)
     return rows
 
 
@@ -89,7 +89,7 @@ def main():
 
     try:
         rows = read_pdf_rows()
-    except Exception as e:
+    except (OSError, PDFSyntaxError) as e:
         print("Could not read the PDF:", e)
         rows = []
 

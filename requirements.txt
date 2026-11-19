@@ -7,3 +7,6 @@ scikit-learn
 chromadb
 streamlit
 langgraph
+pytest
+httpx
+ruff

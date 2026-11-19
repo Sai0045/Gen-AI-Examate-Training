@@ -3,6 +3,8 @@ import json
 import os
 import time
 
+from chromadb.errors import ChromaError
+
 from app.rag import answer_question
 
 BASE_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -81,7 +83,7 @@ def run_config(config, rows):
                 else:
                     status = "FAIL"
 
-        except Exception as e:
+        except (RuntimeError, OSError, ValueError, ChromaError) as e:
             answer = "ERROR: " + str(e)[:150]
             status = "ERROR"
 

@@ -1,15 +1,15 @@
 
 from uuid import uuid4
 
+from chromadb.errors import ChromaError
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from langgraph.types import Command
+from pydantic import BaseModel
 
 from app.chat import chat_answer
+from app.graph import agent_graph
 from app.records import load_records
 from app.smart_search import SmartSearch
-from app.graph import agent_graph
-
 
 app = FastAPI(title="TeekaTimer")
 
@@ -117,7 +117,7 @@ def semantic(q: str, k: int = 3):
     try:
         from app.vectorstore import semantic_search
         results = semantic_search(q, k)
-    except Exception as e:
+    except (RuntimeError, OSError, ChromaError) as e:
         raise HTTPException(
             status_code=503,
             detail="Semantic search is not ready: " + str(e)[:150]
@@ -133,7 +133,7 @@ def ask_rag(body: AskRequest):
         result = answer_question(body.question, body.k)
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=str(e)[:200])
-    except Exception as e:
+    except (OSError, ChromaError, ValueError) as e:
         raise HTTPException(
             status_code=503,
             detail="RAG is not ready: " + str(e)[:150]
@@ -203,7 +203,7 @@ def ask_agent(body: AgentRequest):
         raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    except Exception:
+    except (RuntimeError, TypeError, OSError, ChromaError):
         raise HTTPException(
             status_code=503,
             detail="The agent service is temporarily unavailable."

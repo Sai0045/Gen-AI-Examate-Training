@@ -1,16 +1,16 @@
-from typing import TypedDict, Optional
+from typing import TypedDict
 
-from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from app.agent_loop import select_tool, execute_tool
+from app.agent_loop import execute_tool, select_tool
 
 
 class AgentState(TypedDict):
     question: str
-    decision: Optional[dict]
-    result: Optional[dict]
+    decision: dict | None
+    result: dict | None
     approved: bool
 
 

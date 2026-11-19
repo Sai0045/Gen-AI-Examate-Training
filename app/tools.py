@@ -4,7 +4,6 @@ from datetime import date, timedelta
 
 from app.records import load_records
 
-
 AGE_PATTERN = re.compile(r"(\d+)\s*(weeks?|months?|years?)", re.IGNORECASE)
 
 

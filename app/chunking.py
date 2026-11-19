@@ -2,6 +2,7 @@ import os
 from html.parser import HTMLParser
 
 import pdfplumber
+from pdfminer.pdfparser import PDFSyntaxError
 
 BASE_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_FOLDER = os.path.join(BASE_FOLDER, "data", "raw")
@@ -77,7 +78,7 @@ def read_documents():
                 pages.extend(read_pdf(path))
             elif name.lower().endswith((".html", ".htm")):
                 pages.extend(read_html(path))
-        except Exception as e:
+        except (OSError, PDFSyntaxError) as e:
             print("Could not read", name, "-", str(e)[:100])
     return pages
 

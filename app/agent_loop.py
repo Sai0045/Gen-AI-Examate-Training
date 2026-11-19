@@ -5,7 +5,6 @@ from app.llm import ask_llm
 from app.rag import answer_question
 from app.tools import vaccine_due_dates
 
-
 AGENT_SYSTEM_PROMPT = """
 You are a tool-selection agent for TeekaTimer, an Indian immunization
 schedule assistant.
@@ -57,7 +56,7 @@ def select_tool(user_message):
     decision = parse_json(response)
 
     if not isinstance(decision, dict):
-        raise RuntimeError("The agent returned an invalid tool selection.")
+        raise TypeError("The agent returned an invalid tool selection.")
 
     tool_name = decision.get("tool")
 

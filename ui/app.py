@@ -1,8 +1,8 @@
-import os
 import json
+import os
 import sys
-from pathlib import Path
 from datetime import date
+from pathlib import Path
 
 # Add the project root so Python can find the backend app package.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -20,10 +20,10 @@ import streamlit as st
 
 from app.tools import vaccine_due_dates
 from ui.storage import (
-    init_db,
-    save_feedback,
-    save_dose_status,
     get_completed_doses,
+    init_db,
+    save_dose_status,
+    save_feedback,
 )
 
 # --------------------------------------------------
@@ -599,9 +599,8 @@ try:
 
         fridge_lines.extend([
             "",
-            "Please confirm vaccination details with "
-            "your healthcare professional.",
-            "This checklist is a tracking aid, not a medical prescription."
+            "Please confirm vaccination details with your healthcare professional.",
+            "This checklist is a tracking aid, not a medical prescription.",
         ])
 
         fridge_list = "\n".join(fridge_lines)
@@ -616,7 +615,7 @@ try:
     else:
         st.info("No vaccine doses were returned for this date.")
 
-except Exception as error:
+except (ValueError, OSError) as error:
     st.error(
         f"Could not generate the vaccine calendar: {error}"
     )
