@@ -167,3 +167,48 @@ Open the forwarded Streamlit port `8502` in your browser.
 - ChromaDB continues to store the document embeddings used by the RAG system.
 
 **Disclaimer:** TeekaTimer is an educational vaccination tracking assistant, not a medical prescription. Always confirm vaccination schedules and decisions with a qualified healthcare professional.
+
+## Run with Docker
+
+Make sure Docker and Docker Compose are installed.
+
+Create a `.env` file from the example file:
+
+```bash
+cp .env.example .env
+```
+
+Add your Groq API key to the `.env` file. Never commit this file to Git.
+
+Build the Docker images and start both services:
+
+```bash
+docker compose up --build -d
+```
+
+Open the application using the forwarded Codespaces ports:
+
+- Streamlit UI: port `8502`
+- FastAPI backend: port `8000`
+- API documentation: port `8000/docs`
+
+Check running containers:
+
+```bash
+docker compose ps
+```
+
+View application logs:
+
+```bash
+docker compose logs -f
+```
+
+Stop the containers:
+
+```bash
+docker compose down
+```
+
+The project `data/` directory is mounted into both containers to persist application data. The `.env` file is supplied to the API container through Docker Compose and is not copied into the Docker image.
+
