@@ -1,4 +1,5 @@
 
+from threading import Thread
 from uuid import uuid4
 
 from chromadb.errors import ChromaError
@@ -16,7 +17,6 @@ from app.vectorstore import get_collection, index_chunks
 app = FastAPI(title="TeekaTimer")
 
 
-@app.on_event("startup")
 def build_rag_index_if_empty():
     collection = get_collection()
     if collection.count() == 0:
@@ -26,6 +26,16 @@ def build_rag_index_if_empty():
             print(f"RAG index ready: {count} chunks indexed.")
         else:
             print("Warning: No source documents found for RAG indexing.")
+
+
+@app.on_event("startup")
+def start_rag_indexing():
+    Thread(
+        target=build_rag_index_if_empty,
+        name="rag-indexer",
+        daemon=True,
+    ).start()
+    print("RAG indexing started in the background.")
 
 records = load_records()
 engine = SmartSearch(records)
