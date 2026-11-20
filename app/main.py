@@ -7,11 +7,26 @@ from langgraph.types import Command
 from pydantic import BaseModel
 
 from app.chat import chat_answer
+from app.chunking import make_chunks
 from app.graph import agent_graph
 from app.records import load_records
 from app.smart_search import SmartSearch
+from app.vectorstore import get_collection, index_chunks
 
 app = FastAPI(title="TeekaTimer")
+
+
+@app.on_event("startup")
+def build_rag_index_if_empty():
+    collection = get_collection()
+    if collection.count() == 0:
+        chunks = make_chunks()
+        if chunks:
+            print("Building RAG index from source documents...")
+            count = index_chunks(chunks)
+            print(f"RAG index ready: {count} chunks indexed.")
+        else:
+            print("Warning: No source documents found for RAG indexing.")
 
 records = load_records()
 engine = SmartSearch(records)
