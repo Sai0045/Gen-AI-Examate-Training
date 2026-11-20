@@ -1,9 +1,10 @@
 import os
+from itertools import islice
 
 import chromadb
 from chromadb.errors import NotFoundError
 
-from app.chunking import make_chunks
+from app.chunking import iter_chunks
 from app.embed import embed_texts
 
 BASE_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,6 @@ def get_collection():
 
 
 def reset_collection():
-    # start from an empty collection so it always matches the current chunking
     client = get_client()
     try:
         client.delete_collection(COLLECTION_NAME)
@@ -29,20 +29,35 @@ def reset_collection():
     return client.get_or_create_collection(name=COLLECTION_NAME)
 
 
-def index_chunks(chunks, batch_size=64):
+def index_chunks(chunks, batch_size=8):
     collection = reset_collection()
-    total = len(chunks)
-    for start in range(0, total, batch_size):
-        batch = chunks[start:start + batch_size]
+    total = 0
+    chunks = iter(chunks)
+
+    while True:
+        batch = list(islice(chunks, batch_size))
+        if not batch:
+            break
+
         texts = [c["text"] for c in batch]
         collection.upsert(
             ids=[c["id"] for c in batch],
             documents=texts,
             embeddings=embed_texts(texts),
-            metadatas=[{"source": c["source"], "page": c["page"],
-                        "title": c["title"], "chunk_no": c["chunk_no"]} for c in batch],
+            metadatas=[
+                {
+                    "source": c["source"],
+                    "page": c["page"],
+                    "title": c["title"],
+                    "chunk_no": c["chunk_no"],
+                }
+                for c in batch
+            ],
         )
-        print("indexed", min(start + batch_size, total), "of", total)
+
+        total += len(batch)
+        print("Indexed", total, "chunks")
+
     return collection.count()
 
 
@@ -51,7 +66,11 @@ def semantic_search(query, k=3):
     if collection.count() == 0:
         raise RuntimeError("The collection is empty. Run: python -m app.vectorstore")
 
-    found = collection.query(query_embeddings=embed_texts([query]), n_results=k)
+    found = collection.query(
+        query_embeddings=embed_texts([query]),
+        n_results=k,
+    )
+
     results = []
     for i in range(len(found["ids"][0])):
         meta = found["metadatas"][0][i]
@@ -62,16 +81,13 @@ def semantic_search(query, k=3):
             "title": meta["title"],
             "distance": round(float(found["distances"][0][i]), 3),
         })
+
     return results
 
 
 def main():
-    chunks = make_chunks()
-    if len(chunks) == 0:
-        print("No chunks found. Put PDFs in data/raw first.")
-        return
-    print("Indexing", len(chunks), "chunks, this can take a few minutes")
-    count = index_chunks(chunks)
+    print("Starting memory-efficient indexing...")
+    count = index_chunks(iter_chunks())
     print("Done. The collection now holds", count, "chunks")
 
 
