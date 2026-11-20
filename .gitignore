@@ -1,7 +1,6 @@
 .venv/
 .env
 __pycache__/
-data/raw/
 data/chroma/
 
 # TeekaTimer local user data
