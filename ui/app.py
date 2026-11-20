@@ -1,3 +1,4 @@
+
 import json
 import os
 import sys
@@ -162,22 +163,34 @@ st.write(
     "schedule and keep track of your baby's vaccination calendar."
 )
 
+# --------------------------------------------------
+# Backend connection check
+# --------------------------------------------------
+
 try:
     health_response = requests.get(
         f"{API_URL}/health",
-        timeout=5
+        timeout=60
     )
 
     if health_response.ok:
         st.success("Backend connected")
     else:
-        st.warning("Backend responded, but reported an issue.")
+        st.warning(
+            f"Backend responded with status code: "
+            f"{health_response.status_code}"
+        )
 
-except requests.RequestException:
+except requests.RequestException as error:
     st.error(
-        "Backend is not connected. Start the FastAPI server "
-        "before using the chat."
+        "Backend connection failed. Please try again."
     )
+
+    st.caption(
+        f"Connection error: {type(error).__name__}: {error}"
+    )
+
+    st.caption(f"Backend URL: {API_URL}")
 
 
 # --------------------------------------------------
@@ -247,7 +260,10 @@ for index, message in enumerate(st.session_state.messages):
                 st.caption("Thank you for your feedback!")
 
 
+# --------------------------------------------------
 # Handle new question
+# --------------------------------------------------
+
 if prompt := st.chat_input("Ask about baby vaccinations..."):
 
     st.session_state.messages.append({
