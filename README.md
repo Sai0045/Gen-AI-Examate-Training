@@ -1,6 +1,8 @@
 
 # TeekaTimer: Baby Vaccine Due-Date Helper
 
+[![TeekaTimer CI](https://github.com/Sai0045/Gen-AI-Examate-Training/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Sai0045/Gen-AI-Examate-Training/actions/workflows/ci.yml)
+
 **Product:** TeekaTimer. Enter your baby's date of birth and see which government vaccines are due, with answers from official MoHFW immunization handbooks.
 
 **User:** A young mother in a village near Kopargaon whose 6-week-old son missed the 6-week anganwadi session and who is worried whether it is too late.
@@ -212,3 +214,4 @@ docker compose down
 
 The project `data/` directory is mounted into both containers to persist application data. The `.env` file is supplied to the API container through Docker Compose and is not copied into the Docker image.
 
+python -c 'from pathlib import Path; print(repr(Path("README.md").read_text().splitlines()[2]))'
