@@ -1,3 +1,4 @@
+
 import os
 from itertools import islice
 
@@ -30,7 +31,7 @@ def reset_collection():
 
 
 def index_chunks(chunks, batch_size=8):
-    collection = reset_collection()
+    collection = get_collection()
     total = 0
     chunks = iter(chunks)
 
@@ -39,7 +40,17 @@ def index_chunks(chunks, batch_size=8):
         if not batch:
             break
 
+        existing = set(
+            collection.get(ids=[c["id"] for c in batch])["ids"]
+        )
+
+        batch = [c for c in batch if c["id"] not in existing]
+
+        if not batch:
+            continue
+
         texts = [c["text"] for c in batch]
+
         collection.upsert(
             ids=[c["id"] for c in batch],
             documents=texts,
@@ -56,15 +67,18 @@ def index_chunks(chunks, batch_size=8):
         )
 
         total += len(batch)
-        print("Indexed", total, "chunks")
+        print("Indexed", total, "new chunks")
 
     return collection.count()
 
 
 def semantic_search(query, k=3):
     collection = get_collection()
+
     if collection.count() == 0:
-        raise RuntimeError("The collection is empty. Run: python -m app.vectorstore")
+        raise RuntimeError(
+            "The collection is empty. Run: python -m app.vectorstore"
+        )
 
     found = collection.query(
         query_embeddings=embed_texts([query]),
@@ -72,8 +86,10 @@ def semantic_search(query, k=3):
     )
 
     results = []
+
     for i in range(len(found["ids"][0])):
         meta = found["metadatas"][0][i]
+
         results.append({
             "text": found["documents"][0][i],
             "source": meta["source"],
