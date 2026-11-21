@@ -12,6 +12,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
+# Build the RAG index while creating the Docker image.
+RUN python -m app.vectorstore
+
 EXPOSE 8000 8502
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
