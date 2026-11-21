@@ -5,7 +5,7 @@
 
 **Product:** TeekaTimer. Enter your baby's date of birth and see which government vaccines are due, with answers from official MoHFW immunization handbooks.
 
-**User:** A young mother in a village near Kopargaon whose 6-week-old son missed the 6-week anganwadi session and who is worried whether it is too late.
+**Target user:** Parents and caregivers who need clear information about routine childhood vaccinations and missed doses.
 
 **Problem:** Parents often don't know which vaccine is due when, or whether a missed dose can still be given.
 
@@ -71,6 +71,10 @@ Open the API documentation:
 - `GET /records/{id}`
 - `GET /search?q=`
 - `POST /questions`
+- `POST /chat` — vaccine schedule chat.
+- `GET /search/semantic?q=&k=` — semantic search over MoHFW documents.
+- `POST /ask` — RAG question answering with citations.
+- `POST /agent` — LangGraph agent workflow.
 
 ## Docs and evaluation
 
@@ -169,6 +173,26 @@ Open the forwarded Streamlit port `8502` in your browser.
 - ChromaDB continues to store the document embeddings used by the RAG system.
 
 **Disclaimer:** TeekaTimer is an educational vaccination tracking assistant, not a medical prescription. Always confirm vaccination schedules and decisions with a qualified healthcare professional.
+
+## CI and Deployment (Day 12)
+
+### Continuous Integration
+
+GitHub Actions runs the CI workflow on every push and pull request to `main`. It:
+
+- Sets up Python 3.14 and installs project dependencies.
+- Runs Ruff to check code quality.
+- Runs the pytest test suite.
+- Builds the Docker image to verify the application image.
+
+The workflow is defined in `.github/workflows/ci.yml`. The CI status is shown by the badge at the top of this README.
+
+### Deployment status
+
+- Streamlit UI: deployed on Render.
+- FastAPI API: deployment was tested, but the service is currently suspended.
+- Local RAG indexing and semantic retrieval: verified with the original ChromaDB embedding model.
+- Public RAG chat: not yet verified.
 
 ## Run with Docker
 
