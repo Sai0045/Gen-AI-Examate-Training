@@ -10,6 +10,69 @@
 
 **Data sources:** MoHFW National Immunization Schedule and the Immunization Handbook for Medical Officers, available from [MoHFW](https://mohfw.gov.in/) and [NHM](https://nhm.gov.in/).
 
+## Project Overview
+
+TeekaTimer helps parents and caregivers understand childhood vaccination schedules, track due dates and find reliable answers using official MoHFW documents.
+
+### Key Features
+- RAG-based vaccination question answering with source and page citations.
+- ChromaDB semantic search over official documents.
+- LangGraph agent with human approval.
+- DOB-based vaccine calendar and dose tracking.
+- SQLite feedback storage and checklist export.
+- Input validation, LLM response caching and usage logging.
+
+### Architecture
+
+```mermaid
+flowchart TD
+    U[Caregiver] --> UI[Streamlit UI]
+    UI --> API[FastAPI]
+    API --> RAG[RAG Pipeline]
+    RAG --> DB[ChromaDB]
+    DB --> DOC[MoHFW Documents]
+    RAG --> LLM[Groq LLM]
+    API --> AG[LangGraph Agent]
+    API --> SQL[SQLite]
+```
+
+### Verified Results
+
+| Metric | Result |
+|---|---:|
+| Document chunks indexed | 885 |
+| Vaccine records | 21 |
+| Automated tests passing | 19 |
+| Ruff checks | Passed |
+| Deployment | Render UI and API verified |
+
+### Live Demo
+- [Streamlit Application](https://teekatimer-ui.onrender.com)
+- [FastAPI Documentation](https://teekatimer-api.onrender.com/docs)
+- Demo video: Coming soon.
+
+## Production Notes (Day 13)
+
+### Performance and Usage Logging
+- Logs per-request latency in milliseconds.
+- Captures Groq input, output and total token usage when returned by the API.
+- Cache hits are logged separately and do not make an LLM API call.
+
+### Response Cache
+- In-memory cache with a 300-second TTL and a maximum of 128 entries.
+- Cache test: 3 requests (2 identical and 1 different) resulted in 2 mocked API calls and 1 cache hit.
+- This test demonstrates one fewer API call in that test scenario; it is not a production-wide savings benchmark.
+
+### Input Validation
+- Question input is limited to 2,000 characters across four POST and two GET endpoints.
+- Oversized inputs are rejected with HTTP 422.
+
+### Security and Quality Checks
+- Added a prompt-injection test using a malicious retrieved passage and a mocked LLM response.
+- Automated tests: 19 passed.
+- Ruff checks: passed.
+- Live latency and token averages have not yet been benchmarked.
+
 ## Data Sources
 
 TeekaTimer uses official government immunization documents, including:

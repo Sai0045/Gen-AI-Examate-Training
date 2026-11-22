@@ -2,9 +2,9 @@
 from uuid import uuid4
 
 from chromadb.errors import ChromaError
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from langgraph.types import Command
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.chat import chat_answer
 from app.graph import agent_graph
@@ -23,21 +23,21 @@ SAFETY_NOTE = (
 
 
 class Question(BaseModel):
-    question: str
+    question: str = Field(max_length=2000)
 
 
 class ChatRequest(BaseModel):
-    question: str
+    question: str = Field(max_length=2000)
     version: str = "v2"
 
 
 class AskRequest(BaseModel):
-    question: str
+    question: str = Field(max_length=2000)
     k: int = 3
 
 
 class AgentRequest(BaseModel):
-    question: str
+    question: str = Field(max_length=2000)
     thread_id: str | None = None
     approved: bool | None = None
 
@@ -62,7 +62,7 @@ def get_record(record_id: int):
 
 
 @app.get("/search")
-def search(q: str):
+def search(q: str = Query(min_length=1, max_length=2000)):
     return {"query": q, "results": engine.search(q)}
 
 
@@ -113,7 +113,7 @@ def chat(body: ChatRequest):
 
 
 @app.get("/search/semantic")
-def semantic(q: str, k: int = 3):
+def semantic(q: str = Query(min_length=1, max_length=2000), k: int = 3):
     try:
         from app.vectorstore import semantic_search
         results = semantic_search(q, k)
