@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import time
 from datetime import date
 from pathlib import Path
 
@@ -163,32 +164,47 @@ st.write(
     "schedule and keep track of your baby's vaccination calendar."
 )
 
+
 # --------------------------------------------------
 # Backend connection check
 # --------------------------------------------------
 
-try:
-    health_response = requests.get(
-        f"{API_URL}/health",
-        timeout=60
-    )
+connected = False
+status_message = None
 
-    if health_response.ok:
-        st.success("Backend connected")
-    else:
-        st.warning(
-            f"Backend responded with status code: "
-            f"{health_response.status_code}"
+for attempt in range(3):
+    try:
+        health_response = requests.get(
+            f"{API_URL}/health",
+            timeout=20
         )
 
-except requests.RequestException as error:
-    st.error(
-        "Backend connection failed. Please try again."
-    )
+        if health_response.ok:
+            connected = True
+            st.success("Backend connected")
+            break
 
-    st.caption(
-        f"Connection error: {type(error).__name__}: {error}"
-    )
+        if health_response.status_code not in [429, 502, 503, 504]:
+            status_message = (
+                f"Backend responded with status code: "
+                f"{health_response.status_code}"
+            )
+            break
+
+    except requests.RequestException:
+        pass
+
+    if attempt < 2:
+        time.sleep(2)
+
+if not connected:
+    if status_message:
+        st.warning(status_message)
+    else:
+        st.warning(
+            "Backend is currently unavailable. "
+            "Please wait a moment and refresh the page."
+        )
 
     st.caption(f"Backend URL: {API_URL}")
 
