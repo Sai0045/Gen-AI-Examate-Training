@@ -1,0 +1,7 @@
+requests
+pdfplumber
+fastapi
+uvicorn
+scikit-learn
+chromadb
+langgraph
